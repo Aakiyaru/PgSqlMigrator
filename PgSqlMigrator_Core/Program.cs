@@ -4,9 +4,41 @@ namespace PgSqlMigrator_Core
 {
     class Program
     {
+        string inAddress;
+        string inLogin;
+        string inPass;
+        string outAddress;
+        string outLogin;
+        string outPass;
+        
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            
+        }
+
+        private void Registration()
+        {
+
+        }
+
+        private void ChangeIn()
+        {
+
+        }
+
+        private void ChangeOut()
+        {
+
+        }
+
+        private void Logout()
+        {
+
+        }
+
+        private void StartMigration()
+        {
+
         }
     }
 }
