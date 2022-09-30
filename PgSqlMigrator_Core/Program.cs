@@ -7,37 +7,63 @@ namespace PgSqlMigrator_Core
         static string inAddress;
         static string inLogin;
         static string inPass;
-        string outAddress;
-        string outLogin;
-        string outPass;
+        static string outAddress;
+        static string outLogin;
+        static string outPass;
         
         static void Main(string[] args)
         {
-            Console.Write("Введите адрес базы данных: ");
-            inAddress = Console.ReadLine();
-            Console.Write("Введите логин базы данных: ");
-            inLogin = Console.ReadLine();
-            Console.Write("Введите пароль базы данных: ");
-            inPass = Console.ReadLine();
-
-            ChangeIn();
+            if (inAddress == null || inLogin == null || inPass == null)
+            {
+                ChangeIn();
+            }
+            if (outAddress == null || outLogin == null || outPass == null)
+            {
+                ChangeOut();
+            }
+            
+            ConnIn();
+            ConnOut();
         }
 
-        private void Registration()
+        static private void ConnIn()
         {
-            
+            string cons = "IN | ";
+            Console.Write(cons+"Введите имя базы данных: ");
+            string dbName = Console.ReadLine();
+            DbConn.CreateConn(cons, inAddress, inLogin, inPass, dbName);
+        }
+
+        static private void ConnOut()
+        {
+            string cons = "OUT | ";
+            Console.Write(cons+"Введите имя базы данных: ");
+            string dbName = Console.ReadLine();
+            DbConn.CreateConn(cons, outAddress, outLogin, outPass, dbName);
         }
 
         static private void ChangeIn()
         {
-            Console.Write("Введите имя базы данных: ");
-            string dbName = Console.ReadLine();
-            DbConn.CreateConn(inAddress, inLogin, inPass, dbName);
+            string cons = "IN | ";
+            Console.Write(cons + "Введите адрес сервера: ");
+            inAddress = Console.ReadLine();
+            Console.Write(cons + "Введите имя пользователя: ");
+            inLogin = Console.ReadLine();
+            Console.Write(cons + "Введите пароль пользователя: ");
+            inPass = Console.ReadLine();
+            Console.WriteLine("");
         }
 
-        private void ChangeOut()
+        static private void ChangeOut()
         {
-
+            string cons = "OUT | ";
+            Console.Write(cons + "Введите адрес сервера: ");
+            outAddress = Console.ReadLine();
+            Console.Write(cons + "Введите имя пользователя: ");
+            outLogin = Console.ReadLine();
+            Console.Write(cons + "Введите пароль пользователя: ");
+            outPass = Console.ReadLine();
+            Console.WriteLine("");
         }
 
         private void Logout()

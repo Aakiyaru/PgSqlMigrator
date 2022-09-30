@@ -9,19 +9,20 @@ namespace PgSqlMigrator_Core
 {
     public static class DbConn
     {
-        public static NpgsqlConnection CreateConn(string address, string login, string password, string dbname)
+        public static NpgsqlConnection CreateConn(string cons, string address, string login, string password, string dbname)
         {
+            cons += "Connect | ";
             string connString = $"Host={address};Username={login};Password={password};Database={dbname}";
             NpgsqlConnection connection = new NpgsqlConnection(connString);
             try
             {
                 connection.Open();
-                Console.WriteLine("Успешно.");
+                Console.WriteLine(cons + "Успешно.\n");
                 return connection;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{ex.Message}");
+                Console.WriteLine($"{cons}{ex.Message}");
                 return null;
             }
         }
