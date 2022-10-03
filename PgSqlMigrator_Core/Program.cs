@@ -1,4 +1,5 @@
 ﻿using System;
+using Npgsql;
 
 namespace PgSqlMigrator_Core
 {
@@ -13,36 +14,45 @@ namespace PgSqlMigrator_Core
         
         static void Main(string[] args)
         {
-            if (inAddress == null || inLogin == null || inPass == null)
+            while (true)
             {
-                ChangeIn();
+                if (inAddress == null || inLogin == null || inPass == null)
+                {
+                    ChangeIn();
+                }
+                if (outAddress == null || outLogin == null || outPass == null)
+                {
+                    ChangeOut();
+                }
+
+                NpgsqlConnection connectionIn = ConnIn();
+                NpgsqlConnection connectionOut = ConnOut();
+
+                string code = InfCoding.Incode(inAddress);
+                Console.WriteLine("Coded: " + code);
+
+                string decode = InfCoding.Decode(code);
+                Console.WriteLine("Decoded: " + decode);
             }
-            if (outAddress == null || outLogin == null || outPass == null)
-            {
-                ChangeOut();
-            }
-            
-            ConnIn();
-            ConnOut();
         }
 
-        static private void ConnIn()
+        private static NpgsqlConnection ConnIn()
         {
             string cons = "IN | ";
             Console.Write(cons+"Введите имя базы данных: ");
             string dbName = Console.ReadLine();
-            DbConn.CreateConn(cons, inAddress, inLogin, inPass, dbName);
+            return DbConn.CreateConn(cons, inAddress, inLogin, inPass, dbName);
         }
 
-        static private void ConnOut()
+        private static NpgsqlConnection ConnOut()
         {
             string cons = "OUT | ";
             Console.Write(cons+"Введите имя базы данных: ");
             string dbName = Console.ReadLine();
-            DbConn.CreateConn(cons, outAddress, outLogin, outPass, dbName);
+            return DbConn.CreateConn(cons, outAddress, outLogin, outPass, dbName);
         }
 
-        static private void ChangeIn()
+        private static void ChangeIn()
         {
             string cons = "IN | ";
             Console.Write(cons + "Введите адрес сервера: ");
@@ -54,7 +64,7 @@ namespace PgSqlMigrator_Core
             Console.WriteLine("");
         }
 
-        static private void ChangeOut()
+        private static void ChangeOut()
         {
             string cons = "OUT | ";
             Console.Write(cons + "Введите адрес сервера: ");
@@ -66,12 +76,12 @@ namespace PgSqlMigrator_Core
             Console.WriteLine("");
         }
 
-        private void Logout()
+        private static void Logout()
         {
 
         }
 
-        private void StartMigration()
+        private static void StartMigration()
         {
 
         }

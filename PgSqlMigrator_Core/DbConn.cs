@@ -7,7 +7,7 @@ using Npgsql;
 
 namespace PgSqlMigrator_Core
 {
-    public static class DbConn
+    public class DbConn
     {
         public static NpgsqlConnection CreateConn(string cons, string address, string login, string password, string dbname)
         {
