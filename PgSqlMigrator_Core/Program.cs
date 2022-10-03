@@ -5,36 +5,85 @@ namespace PgSqlMigrator_Core
 {
     class Program
     {
+        static ProgramData Data;
         static string inAddress;
         static string inLogin;
         static string inPass;
         static string outAddress;
         static string outLogin;
         static string outPass;
-        
+        static string key;
+
         static void Main(string[] args)
         {
             while (true)
             {
-                if (inAddress == null || inLogin == null || inPass == null)
+                if (CheckKey() && LoadData())
                 {
-                    ChangeIn();
+                    
                 }
-                if (outAddress == null || outLogin == null || outPass == null)
+                else
                 {
+                    key = KeyMaker.Make();
+                    Data.key = InfCoding.Incode(key, KeyMaker.defaultKey);
+                    ChangeIn();
                     ChangeOut();
                 }
 
                 NpgsqlConnection connectionIn = ConnIn();
                 NpgsqlConnection connectionOut = ConnOut();
 
-                string key = KeyMaker.Make();
+                DataSaver.SaveProgData(Data);
+            }
+        }
 
-                string code = InfCoding.Incode(inAddress, key);
-                Console.WriteLine("Coded: " + code);
+        private static bool CheckKey()
+        {
+            try
+            {
+                Data = DataSaver.GetProgramData();
 
-                string decode = InfCoding.Decode(code, key);
-                Console.WriteLine("Decoded: " + decode);
+                if (Data.key != null)
+                {
+                    key = InfCoding.Decode(Data.key, KeyMaker.defaultKey);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool LoadData()
+        {
+            try
+            {
+                Data = DataSaver.GetProgramData();
+
+                if (Data.inAddress != null || Data.inLogin != null || Data.inPass != null || Data.outAddress != null || Data.outLogin != null || Data.outPass != null)
+                {
+                    inAddress = InfCoding.Decode(Data.inAddress, key);
+                    inLogin = InfCoding.Decode(Data.inLogin, key);
+                    inPass = InfCoding.Decode(Data.inPass, key);
+                    outAddress = InfCoding.Decode(Data.outAddress, key);
+                    outLogin = InfCoding.Decode(Data.outLogin, key);
+                    outPass = InfCoding.Decode(Data.outPass, key);
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -59,10 +108,13 @@ namespace PgSqlMigrator_Core
             string cons = "IN | ";
             Console.Write(cons + "Введите адрес сервера: ");
             inAddress = Console.ReadLine();
+            Data.inAddress = InfCoding.Incode(inAddress, key);
             Console.Write(cons + "Введите имя пользователя: ");
             inLogin = Console.ReadLine();
+            Data.inLogin = InfCoding.Incode(inLogin, key);
             Console.Write(cons + "Введите пароль пользователя: ");
             inPass = Console.ReadLine();
+            Data.inPass = InfCoding.Incode(inPass, key);
             Console.WriteLine("");
         }
 
@@ -71,10 +123,13 @@ namespace PgSqlMigrator_Core
             string cons = "OUT | ";
             Console.Write(cons + "Введите адрес сервера: ");
             outAddress = Console.ReadLine();
+            Data.outAddress = InfCoding.Incode(outAddress, key);
             Console.Write(cons + "Введите имя пользователя: ");
             outLogin = Console.ReadLine();
+            Data.outLogin = InfCoding.Incode(outLogin, key);
             Console.Write(cons + "Введите пароль пользователя: ");
             outPass = Console.ReadLine();
+            Data.outPass = InfCoding.Incode(outPass, key);
             Console.WriteLine("");
         }
 

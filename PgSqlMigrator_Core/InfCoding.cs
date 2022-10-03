@@ -13,14 +13,19 @@ namespace PgSqlMigrator_Core
             string output = "";
             for (int i = 0; i < input.Length; i++)
             {
-                output += (char)(input[i] ^ key[i % key.Length]);
+                output += (char)(input[i] * key[i % key.Length]);
             }
             return output;
         }
 
         public static string Decode(string input, string key)
         {
-            return Incode(input, key);
+            string output = "";
+            for (int i = 0; i < input.Length; i++)
+            {
+                output += (char)(input[i] / key[i % key.Length]);
+            }
+            return output;
         }
     }
 }
