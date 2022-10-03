@@ -28,10 +28,12 @@ namespace PgSqlMigrator_Core
                 NpgsqlConnection connectionIn = ConnIn();
                 NpgsqlConnection connectionOut = ConnOut();
 
-                string code = InfCoding.Incode(inAddress);
+                string key = KeyMaker.Make();
+
+                string code = InfCoding.Incode(inAddress, key);
                 Console.WriteLine("Coded: " + code);
 
-                string decode = InfCoding.Decode(code);
+                string decode = InfCoding.Decode(code, key);
                 Console.WriteLine("Decoded: " + decode);
             }
         }
