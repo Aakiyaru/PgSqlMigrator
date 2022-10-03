@@ -8,6 +8,9 @@ using System.Xml.Serialization;
 
 namespace PgSqlMigrator_Core
 {
+    /// <summary>
+    /// Список сохранённых параметров
+    /// </summary>
     public class ProgramData
     {
         public string inAddress { get; set; }

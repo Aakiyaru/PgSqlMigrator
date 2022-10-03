@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace PgSqlMigrator_Core
 {
+    /// <summary>
+    /// Класс сохранения данных
+    /// </summary>
     public class DataSaver
     {
         private static readonly XmlSerializer _xmlSerializer =
@@ -15,6 +14,10 @@ namespace PgSqlMigrator_Core
 
         private static readonly string file = @"..\programdata.xml";
 
+        /// <summary>
+        /// Загрузка данных программы из файла сохранения
+        /// </summary>
+        /// <returns>Сохранённые данные</returns>
         public static ProgramData GetProgramData()
         {
             ProgramData progData = new ProgramData();
@@ -36,6 +39,10 @@ namespace PgSqlMigrator_Core
             return progData;
         }
 
+        /// <summary>
+        /// Сохранение данных программы в файл
+        /// </summary>
+        /// <param name="progData"></param>
         public static void SaveProgData(ProgramData progData)
         {
             try

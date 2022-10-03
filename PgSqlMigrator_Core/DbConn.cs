@@ -3,8 +3,20 @@ using Npgsql;
 
 namespace PgSqlMigrator_Core
 {
+    /// <summary>
+    /// Класс подключения к БД
+    /// </summary>
     public class DbConn
     {
+        /// <summary>
+        /// Создать подключение к БД
+        /// </summary>
+        /// <param name="cons"></param>
+        /// <param name="address"></param>
+        /// <param name="login"></param>
+        /// <param name="password"></param>
+        /// <param name="dbname"></param>
+        /// <returns>Объект подключения к БД класса NpgsqlConnection</returns>
         public static NpgsqlConnection CreateConn(string cons, string address, string login, string password, string dbname)
         {
             cons += "Connect | ";

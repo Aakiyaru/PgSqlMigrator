@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PgSqlMigrator_Core
+﻿namespace PgSqlMigrator_Core
 {
+    /// <summary>
+    /// Класс кодирования информации
+    /// </summary>
     public class InfCoding
     {
+        /// <summary>
+        /// Метод для шифрования строки
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="key"></param>
+        /// <returns>Зашифрованная строка</returns>
         public static string Incode(string input, string key)
         {
             string output = "";
@@ -18,6 +21,12 @@ namespace PgSqlMigrator_Core
             return output;
         }
 
+        /// <summary>
+        /// Медот дешифровки строки
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="key"></param>
+        /// <returns>Расшифрованная строка</returns>
         public static string Decode(string input, string key)
         {
             string output = "";

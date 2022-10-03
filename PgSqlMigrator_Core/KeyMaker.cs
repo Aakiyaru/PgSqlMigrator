@@ -2,10 +2,19 @@
 
 namespace PgSqlMigrator_Core
 {
+    /// <summary>
+    /// Класс создания ключей шифрования
+    /// </summary>
     public class KeyMaker
     {
+        /// <summary>
+        /// Ключ по-умолчанию, используемый для шифровки ключа шифрования
+        /// </summary>
         public const string defaultKey = "defaultKey";
 
+        /// <summary>
+        /// Набор символов, доступных в ключе шифрования
+        /// </summary>
         private static string[] symbols = {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
             "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=",
@@ -17,6 +26,10 @@ namespace PgSqlMigrator_Core
             "Z", "X", "C", "V", "B", "N", "M", "<", ">"
         };
 
+        /// <summary>
+        /// Создание ключа шифрования
+        /// </summary>
+        /// <returns>Ключ шифрования</returns>
         public static string Make()
         {
             string answer = "";
