@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-
-namespace PgSqlMigrator_Core
+﻿namespace PgSqlMigrator_Core
 {
     /// <summary>
     /// Список сохранённых параметров

@@ -3,7 +3,7 @@
     /// <summary>
     /// Класс кодирования информации
     /// </summary>
-    public class InfCoding
+    public class InfoCoder
     {
         /// <summary>
         /// Метод для шифрования строки

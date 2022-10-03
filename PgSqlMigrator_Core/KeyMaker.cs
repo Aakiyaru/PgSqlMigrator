@@ -30,7 +30,7 @@ namespace PgSqlMigrator_Core
         /// Создание ключа шифрования
         /// </summary>
         /// <returns>Ключ шифрования</returns>
-        public static string Make()
+        public static string Create()
         {
             string answer = "";
 

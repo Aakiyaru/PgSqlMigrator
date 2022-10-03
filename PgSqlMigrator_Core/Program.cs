@@ -23,8 +23,8 @@ namespace PgSqlMigrator_Core
         {
             if (!(CheckKey() && LoadData()))
             {
-                key = KeyMaker.Make();
-                Data.key = InfCoding.Incode(key, KeyMaker.defaultKey);
+                key = KeyMaker.Create();
+                Data.key = InfoCoder.Incode(key, KeyMaker.defaultKey);
                 ChangeIn();
                 ChangeOut();
             }
@@ -64,11 +64,11 @@ namespace PgSqlMigrator_Core
         {
             try
             {
-                Data = DataSaver.GetProgramData();
+                Data = SaveLoader.Load();
 
                 if (Data.key != null)
                 {
-                    key = InfCoding.Decode(Data.key, KeyMaker.defaultKey);
+                    key = InfoCoder.Decode(Data.key, KeyMaker.defaultKey);
                     return true;
                 }
                 else
@@ -86,18 +86,18 @@ namespace PgSqlMigrator_Core
         {
             try
             {
-                Data = DataSaver.GetProgramData();
+                Data = SaveLoader.Load();
 
                 if (Data.inAddress != null && Data.inLogin != null && Data.inPass != null && Data.inDB != null && Data.outAddress != null && Data.outLogin != null && Data.outPass != null && Data.outDB != null)
                 {
-                    inAddress = InfCoding.Decode(Data.inAddress, key);
-                    inLogin = InfCoding.Decode(Data.inLogin, key);
-                    inPass = InfCoding.Decode(Data.inPass, key);
-                    inDB = InfCoding.Decode(Data.inDB, key);
-                    outAddress = InfCoding.Decode(Data.outAddress, key);
-                    outLogin = InfCoding.Decode(Data.outLogin, key);
-                    outPass = InfCoding.Decode(Data.outPass, key);
-                    outDB = InfCoding.Decode(Data.outDB, key);
+                    inAddress = InfoCoder.Decode(Data.inAddress, key);
+                    inLogin = InfoCoder.Decode(Data.inLogin, key);
+                    inPass = InfoCoder.Decode(Data.inPass, key);
+                    inDB = InfoCoder.Decode(Data.inDB, key);
+                    outAddress = InfoCoder.Decode(Data.outAddress, key);
+                    outLogin = InfoCoder.Decode(Data.outLogin, key);
+                    outPass = InfoCoder.Decode(Data.outPass, key);
+                    outDB = InfoCoder.Decode(Data.outDB, key);
 
                     return true;
                 }
@@ -114,12 +114,12 @@ namespace PgSqlMigrator_Core
 
         private static NpgsqlConnection ConnIn()
         {   
-            return DbConn.CreateConn("IN | ", inAddress, inLogin, inPass, inDB);
+            return DataBaseConnection.CreateConnection("IN | ", inAddress, inLogin, inPass, inDB);
         }
 
         private static NpgsqlConnection ConnOut()
         {
-            return DbConn.CreateConn("OUT | ", outAddress, outLogin, outPass, outDB);
+            return DataBaseConnection.CreateConnection("OUT | ", outAddress, outLogin, outPass, outDB);
         }
 
         private static void ChangeIn()
@@ -127,18 +127,18 @@ namespace PgSqlMigrator_Core
             string cons = "IN | ";
             Console.Write(cons + "Введите адрес сервера: ");
             inAddress = Console.ReadLine();
-            Data.inAddress = InfCoding.Incode(inAddress, key);
+            Data.inAddress = InfoCoder.Incode(inAddress, key);
             Console.Write(cons + "Введите имя пользователя: ");
             inLogin = Console.ReadLine();
-            Data.inLogin = InfCoding.Incode(inLogin, key);
+            Data.inLogin = InfoCoder.Incode(inLogin, key);
             Console.Write(cons + "Введите пароль пользователя: ");
             inPass = Console.ReadLine();
-            Data.inPass = InfCoding.Incode(inPass, key);
+            Data.inPass = InfoCoder.Incode(inPass, key);
             Console.Write(cons + "Введите имя базы данных: ");
             inDB = Console.ReadLine();
-            Data.inDB = InfCoding.Incode(inDB, key);
+            Data.inDB = InfoCoder.Incode(inDB, key);
             Console.WriteLine("");
-            DataSaver.SaveProgData(Data);
+            SaveLoader.Save(Data);
         }
 
         private static void ChangeOut()
@@ -146,18 +146,18 @@ namespace PgSqlMigrator_Core
             string cons = "OUT | ";
             Console.Write(cons + "Введите адрес сервера: ");
             outAddress = Console.ReadLine();
-            Data.outAddress = InfCoding.Incode(outAddress, key);
+            Data.outAddress = InfoCoder.Incode(outAddress, key);
             Console.Write(cons + "Введите имя пользователя: ");
             outLogin = Console.ReadLine();
-            Data.outLogin = InfCoding.Incode(outLogin, key);
+            Data.outLogin = InfoCoder.Incode(outLogin, key);
             Console.Write(cons + "Введите пароль пользователя: ");
             outPass = Console.ReadLine();
-            Data.outPass = InfCoding.Incode(outPass, key);
+            Data.outPass = InfoCoder.Incode(outPass, key);
             Console.Write(cons + "Введите имя базы данных: ");
             outDB = Console.ReadLine();
-            Data.outDB = InfCoding.Incode(outDB, key);
+            Data.outDB = InfoCoder.Incode(outDB, key);
             Console.WriteLine("");
-            DataSaver.SaveProgData(Data);
+            SaveLoader.Save(Data);
         }
 
         private static void StartMigration()

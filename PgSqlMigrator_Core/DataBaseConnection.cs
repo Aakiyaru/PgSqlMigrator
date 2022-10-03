@@ -6,7 +6,7 @@ namespace PgSqlMigrator_Core
     /// <summary>
     /// Класс подключения к БД
     /// </summary>
-    public class DbConn
+    public class DataBaseConnection
     {
         /// <summary>
         /// Создать подключение к БД
@@ -17,7 +17,7 @@ namespace PgSqlMigrator_Core
         /// <param name="password"></param>
         /// <param name="dbname"></param>
         /// <returns>Объект подключения к БД класса NpgsqlConnection</returns>
-        public static NpgsqlConnection CreateConn(string cons, string address, string login, string password, string dbname)
+        public static NpgsqlConnection CreateConnection(string cons, string address, string login, string password, string dbname)
         {
             cons += "Connect | ";
             string connString = $"Host={address};Username={login};Password={password};Database={dbname}";

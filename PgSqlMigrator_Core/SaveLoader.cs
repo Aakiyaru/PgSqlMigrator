@@ -7,7 +7,7 @@ namespace PgSqlMigrator_Core
     /// <summary>
     /// Класс сохранения данных
     /// </summary>
-    public class DataSaver
+    public class SaveLoader
     {
         private static readonly XmlSerializer _xmlSerializer =
                                     new XmlSerializer(typeof(ProgramData));
@@ -18,7 +18,7 @@ namespace PgSqlMigrator_Core
         /// Загрузка данных программы из файла сохранения
         /// </summary>
         /// <returns>Сохранённые данные</returns>
-        public static ProgramData GetProgramData()
+        public static ProgramData Load()
         {
             ProgramData progData = new ProgramData();
             if (File.Exists(file))
@@ -43,7 +43,7 @@ namespace PgSqlMigrator_Core
         /// Сохранение данных программы в файл
         /// </summary>
         /// <param name="progData"></param>
-        public static void SaveProgData(ProgramData progData)
+        public static void Save(ProgramData progData)
         {
             try
             {
