@@ -56,8 +56,24 @@ namespace PgSqlMigrator_Core
                     case "start":
                         StartMigration();
                         break;
+
+                    case "help":
+                        PrintHelp();
+                        break;
+
+                    default:
+                        Console.WriteLine($"Неизвестная команда '{inp}', обратитесь к справочнику или напишите 'help'\n");
+                        break;
                 }
             }
+        }
+
+        private static void PrintHelp()
+        {
+            Console.WriteLine("'change in' - изменить параметры подключения к БД, куда будет просиходить миграция.");
+            Console.WriteLine("'change out' - изменить параметры подключения к БД, откуда будет просиходить миграция.");
+            Console.WriteLine("'start' - начать миграцию с заданными параметрами.");
+            Console.WriteLine("'help' - справка.\n");
         }
 
         private static bool CheckKey()
