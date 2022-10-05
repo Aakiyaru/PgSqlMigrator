@@ -18,6 +18,8 @@ namespace PgSqlMigrator_Core
         static string key;
         static NpgsqlConnection connectionIn;
         static NpgsqlConnection connectionOut;
+        static string table;
+        static string field;
 
         static void Main(string[] args)
         {
@@ -52,7 +54,7 @@ namespace PgSqlMigrator_Core
                         break;
 
                     case "start":
-                        CommandExecutor.Execute(connectionIn, connectionOut, "Test_table");
+                        OnWork();
                         break;
 
                     case "help":
@@ -72,6 +74,38 @@ namespace PgSqlMigrator_Core
             Console.WriteLine("'change out' - изменить параметры подключения к БД, откуда будет просиходить миграция.");
             Console.WriteLine("'start' - начать миграцию с заданными параметрами.");
             Console.WriteLine("'help' - справка.");
+        }
+
+        private static void OnWork()
+        {
+            Console.Write("Введите имя таблицы: ");
+            table = Console.ReadLine();
+
+            Console.Write("Введите название поля (оставить пустым, если нужны все поля): ");
+            field = Console.ReadLine();
+
+            if (field == "")
+            {
+                while (true)
+                {
+                    if (!CommandExecutor.Execute(connectionIn, connectionOut, table))
+                    {
+                        break;
+                    }
+                    Thread.Sleep(60000);
+                }
+            }
+            else
+            {
+                while (true)
+                {
+                    if(!CommandExecutor.Execute(connectionIn, connectionOut, table, field))
+                    {
+                        break;
+                    }
+                    Thread.Sleep(60000);
+                }
+            }
         }
 
         private static bool CheckKey()
