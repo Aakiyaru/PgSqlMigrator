@@ -11,26 +11,24 @@ namespace PgSqlMigrator_Core
         /// <summary>
         /// Создать подключение к БД
         /// </summary>
-        /// <param name="cons"></param>
         /// <param name="address"></param>
         /// <param name="login"></param>
         /// <param name="password"></param>
         /// <param name="dbname"></param>
         /// <returns>Объект подключения к БД класса NpgsqlConnection</returns>
-        public static NpgsqlConnection CreateConnection(string cons, string address, string login, string password, string dbname)
+        public static NpgsqlConnection CreateConnection(string address, string login, string password, string dbname)
         {
-            cons += "Connect | ";
             string connString = $"Host={address};Username={login};Password={password};Database={dbname}";
             NpgsqlConnection connection = new NpgsqlConnection(connString);
             try
             {
                 connection.Open();
-                Console.WriteLine(cons + "Успешно.\n");
+                Console.WriteLine($"{DateTime.Now}: успешное подключение к базе данных {address} - {dbname}");
                 return connection;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{cons}{ex.Message}");
+                Console.WriteLine($"{DateTime.Now}: {ex.Message}");
                 return null;
             }
         }
