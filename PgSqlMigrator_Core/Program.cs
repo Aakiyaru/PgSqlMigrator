@@ -12,14 +12,15 @@ namespace PgSqlMigrator_Core
         static string inLogin;
         static string inPass;
         static string inDB;
+        static string inTable;
         static string outAddress;
         static string outLogin;
         static string outPass;
         static string outDB;
+        static string outTable;
         static string key;
         static NpgsqlConnection connectionIn;
         static NpgsqlConnection connectionOut;
-        static string table;
 
         static void Main(string[] args)
         {
@@ -53,12 +54,9 @@ namespace PgSqlMigrator_Core
 
         private static void OnWork()
         {
-            Console.Write("Введите имя таблицы: ");
-            table = Console.ReadLine();
-
             while (true)
             {
-                if (!CommandExecutor.Execute(connectionIn, connectionOut, table))
+                if (!CommandExecutor.Execute(connectionIn, connectionOut, inTable, outTable))
                 {
                     break;
                 }
@@ -100,10 +98,12 @@ namespace PgSqlMigrator_Core
                     inLogin = InfoCoder.Decode(Data.inLogin, key);
                     inPass = InfoCoder.Decode(Data.inPass, key);
                     inDB = InfoCoder.Decode(Data.inDB, key);
+                    inTable = InfoCoder.Decode(Data.inTable, key);
                     outAddress = InfoCoder.Decode(Data.outAddress, key);
                     outLogin = InfoCoder.Decode(Data.outLogin, key);
                     outPass = InfoCoder.Decode(Data.outPass, key);
                     outDB = InfoCoder.Decode(Data.outDB, key);
+                    outTable = InfoCoder.Decode(Data.outTable, key);
 
                     return true;
                 }

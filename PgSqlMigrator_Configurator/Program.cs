@@ -12,10 +12,12 @@ namespace PgSqlMigrator_Configurator
         static string inLogin;
         static string inPass;
         static string inDB;
+        static string inTable;
         static string outAddress;
         static string outLogin;
         static string outPass;
         static string outDB;
+        static string outTable;
         static string key;
 
         static void Main(string[] args)
@@ -43,6 +45,9 @@ namespace PgSqlMigrator_Configurator
             Console.Write(cons + "Введите имя базы данных: ");
             inDB = Console.ReadLine();
             Data.inDB = InfoCoder.Incode(inDB, key);
+            Console.Write(cons + "Введите имя таблицы: ");
+            inTable = Console.ReadLine();
+            Data.inTable = InfoCoder.Incode(inTable, key);
             SaveLoader.Save(Data);
         }
 
@@ -61,6 +66,9 @@ namespace PgSqlMigrator_Configurator
             Console.Write(cons + "Введите имя базы данных: ");
             outDB = Console.ReadLine();
             Data.outDB = InfoCoder.Incode(outDB, key);
+            Console.Write(cons + "Введите имя таблицы: ");
+            outTable = Console.ReadLine();
+            Data.outTable = InfoCoder.Incode(outTable, key);
             SaveLoader.Save(Data);
         }
 
@@ -98,10 +106,12 @@ namespace PgSqlMigrator_Configurator
                     inLogin = InfoCoder.Decode(Data.inLogin, key);
                     inPass = InfoCoder.Decode(Data.inPass, key);
                     inDB = InfoCoder.Decode(Data.inDB, key);
+                    inTable = InfoCoder.Decode(Data.inTable, key);
                     outAddress = InfoCoder.Decode(Data.outAddress, key);
                     outLogin = InfoCoder.Decode(Data.outLogin, key);
                     outPass = InfoCoder.Decode(Data.outPass, key);
                     outDB = InfoCoder.Decode(Data.outDB, key);
+                    outTable = InfoCoder.Decode(Data.outTable, key);
 
                     return true;
                 }

@@ -14,13 +14,13 @@ namespace PgSqlMigrator_Core
         /// </summary>
         /// <param name="connIn"></param>
         /// <param name="connOut"></param>
-        /// <param name="table"></param>
+        /// <param name="inTable"></param>
         /// <returns>true либо false в зависимости от успешности операции</returns>
-        public static bool Execute(NpgsqlConnection connIn, NpgsqlConnection connOut, string table)
+        public static bool Execute(NpgsqlConnection connIn, NpgsqlConnection connOut, string inTable, string outTable)
         {
             try
             {
-                NpgsqlCommand commandOut = new NpgsqlCommand($"SELECT * FROM public.\"{table}\";", connOut);
+                NpgsqlCommand commandOut = new NpgsqlCommand($"SELECT * FROM public.\"{inTable}\";", connOut);
                 NpgsqlDataReader rowCounter = commandOut.ExecuteReader();
                 int rowCount = 0;
 
@@ -50,7 +50,7 @@ namespace PgSqlMigrator_Core
 
                 Console.WriteLine($"{DateTime.Now}: Данные с сервера собраны в пакет.");
 
-                string commandText = $"INSERT INTO \"{table}\" VALUES (";
+                string commandText = $"INSERT INTO \"{outTable}\" VALUES (";
 
                 for (int i = 0; i < downloadData.Length/reader.FieldCount; i++)
                 {
@@ -63,7 +63,7 @@ namespace PgSqlMigrator_Core
 
                     NpgsqlCommand commandIn = new NpgsqlCommand(commandText, connIn);
                     commandIn.ExecuteNonQuery();
-                    commandText = $"INSERT INTO \"{table}\" VALUES (";
+                    commandText = $"INSERT INTO \"{inTable}\" VALUES (";
 
                 }
                 Console.WriteLine($"{DateTime.Now}: Данные отправлены на второй сервер.");
@@ -87,15 +87,15 @@ namespace PgSqlMigrator_Core
         ///// </summary>
         ///// <param name="connIn"></param>
         ///// <param name="connOut"></param>
-        ///// <param name="table"></param>
+        ///// <param name="inTable"></param>
         ///// <param name="field"></param>
         ///// <returns>true либо false в зависимости от успешности операции</returns>
-        //public static bool Execute(NpgsqlConnection connIn, NpgsqlConnection connOut, string table, string field)
+        //public static bool Execute(NpgsqlConnection connIn, NpgsqlConnection connOut, string inTable, string field)
         //{
         //    try
         //    {
         //        List<string> downloadData = new List<string>();
-        //        NpgsqlCommand commandOut = new NpgsqlCommand($"SELECT {field} FROM public.\"{table}\";", connOut);
+        //        NpgsqlCommand commandOut = new NpgsqlCommand($"SELECT {field} FROM public.\"{inTable}\";", connOut);
         //        NpgsqlDataReader reader = commandOut.ExecuteReader();
         //        Console.WriteLine($"{DateTime.Now}: Данные с сервера получены.");
 
@@ -124,7 +124,7 @@ namespace PgSqlMigrator_Core
         //            for (int i = 0; i < downloadData.Count; i++)
         //            {
         //                NpgsqlCommand commandIn = new NpgsqlCommand(
-        //                    $"INSERT INTO \"{table}\"({field}) VALUES ('{downloadData[i]}');", connIn);
+        //                    $"INSERT INTO \"{inTable}\"({field}) VALUES ('{downloadData[i]}');", connIn);
         //                commandIn.ExecuteNonQuery();
         //            }
         //            Console.WriteLine($"{DateTime.Now}: Данные отправлены на второй сервер.");
