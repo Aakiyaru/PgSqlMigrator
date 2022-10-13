@@ -2,7 +2,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace PgSqlMigrator_Core
+namespace PgSqlMigrator_Library
 {
     /// <summary>
     /// Класс сохранения данных
@@ -12,7 +12,8 @@ namespace PgSqlMigrator_Core
         private static readonly XmlSerializer _xmlSerializer =
                                     new XmlSerializer(typeof(ProgramData));
 
-        private static readonly string file = @"..\programdata.xml";
+        private static string docFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.Create);
+        private static readonly string file = Path.Combine(docFolder, "programdata.xml");
 
         /// <summary>
         /// Загрузка данных программы из файла сохранения

@@ -1,4 +1,4 @@
-﻿namespace PgSqlMigrator_Core
+﻿namespace PgSqlMigrator_Library
 {
     /// <summary>
     /// Класс кодирования информации

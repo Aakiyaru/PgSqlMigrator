@@ -20,10 +20,21 @@ namespace PgSqlMigrator_Core
         {
             try
             {
-                List<string> downloadData = new List<string>();
                 NpgsqlCommand commandOut = new NpgsqlCommand($"SELECT * FROM public.\"{table}\";", connOut);
+                NpgsqlDataReader rowCounter = commandOut.ExecuteReader();
+                int rowCount = 0;
+
+                while(rowCounter.Read())
+                {
+                    rowCount++;
+                }
+
+                rowCounter.Close();
                 NpgsqlDataReader reader = commandOut.ExecuteReader();
                 Console.WriteLine($"{DateTime.Now}: Данные с сервера получены.");
+
+                string[,] downloadData = new string[rowCount,reader.FieldCount];
+                int readerCount = 0;
 
                 if (reader.HasRows)
                 {
@@ -31,23 +42,32 @@ namespace PgSqlMigrator_Core
                     {
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
-                            if (reader.GetFieldType(i).ToString() != "System.String")
-                            {
-                                downloadData.Add(Convert.ToString(reader.GetValue(i)));
-                            }
-                            else
-                            {
-                                downloadData.Add(reader.GetString(i));
-                            }
+                            downloadData[readerCount, i] = Convert.ToString(reader.GetValue(i));
                         }
+                        readerCount++;
                     }
                 }
+
                 Console.WriteLine($"{DateTime.Now}: Данные с сервера собраны в пакет.");
-                
-                for (int i = 0; i < downloadData.Count; i++)
+
+                string commandText = $"INSERT INTO \"{table}\" VALUES (";
+
+                for (int i = 0; i < downloadData.Length/reader.FieldCount; i++)
                 {
-                    Console.WriteLine(downloadData[i]);
+                    for (int j = 0; j < reader.FieldCount; j++)
+                    {
+                        commandText += $"'{downloadData[i,j]}',";
+                    }
+                    commandText = commandText.Substring(0, commandText.Length - 1);
+                    commandText += ");";
+
+                    NpgsqlCommand commandIn = new NpgsqlCommand(commandText, connIn);
+                    commandIn.ExecuteNonQuery();
+                    commandText = $"INSERT INTO \"{table}\" VALUES (";
+
                 }
+                Console.WriteLine($"{DateTime.Now}: Данные отправлены на второй сервер.");
+                Console.WriteLine($"УСПЕШНО! Операция возобновится через 1 минуту...\n  ");
 
                 reader.Close();
                 return true;
@@ -57,69 +77,71 @@ namespace PgSqlMigrator_Core
                 Console.WriteLine($"{DateTime.Now}: " + ex.Message);
                 return false;
             }
+
         }
 
-        /// <summary>
-        /// Метод исполнения команды
-        /// </summary>
-        /// <param name="connIn"></param>
-        /// <param name="connOut"></param>
-        /// <param name="table"></param>
-        /// <param name="field"></param>
-        /// <returns>true либо false в зависимости от успешности операции</returns>
-        public static bool Execute(NpgsqlConnection connIn, NpgsqlConnection connOut, string table, string field)
-        {
-            try
-            {
-                List<string> downloadData = new List<string>();
-                NpgsqlCommand commandOut = new NpgsqlCommand($"SELECT {field} FROM public.\"{table}\";", connOut);
-                NpgsqlDataReader reader = commandOut.ExecuteReader();
-                Console.WriteLine($"{DateTime.Now}: Данные с сервера получены.");
 
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        for (int i = 0; i < reader.FieldCount; i++)
-                        {
-                            if (reader.GetFieldType(i).ToString() != "System.String")
-                            {
-                                downloadData.Add(Convert.ToString(reader.GetValue(i)));
-                            }
-                            else
-                            {
-                                downloadData.Add(reader.GetString(i));
-                            }
-                        }
-                    }
-                }
-                reader.Close();
-                Console.WriteLine($"{DateTime.Now}: Данные с сервера собраны в пакет.");
 
-                try
-                {
-                    for (int i = 0; i < downloadData.Count; i++)
-                    {
-                        NpgsqlCommand commandIn = new NpgsqlCommand(
-                            $"CREATE TABLE IF NOT EXISTS \"{table}\" ({field} TEXT);" +
-                            $"INSERT INTO \"{table}\"({field}) VALUES ('{downloadData[i]}');", connIn);
-                        commandIn.ExecuteNonQuery();
-                    }
-                    Console.WriteLine($"{DateTime.Now}: Данные отправлены на второй сервер.");
-                    Console.WriteLine($"УСПЕШНО! Операция возобновится через 1 минуту...\n  ");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"{DateTime.Now}: {ex.Message}");
-                }
+        ///// <summary>
+        ///// Метод исполнения команды
+        ///// </summary>
+        ///// <param name="connIn"></param>
+        ///// <param name="connOut"></param>
+        ///// <param name="table"></param>
+        ///// <param name="field"></param>
+        ///// <returns>true либо false в зависимости от успешности операции</returns>
+        //public static bool Execute(NpgsqlConnection connIn, NpgsqlConnection connOut, string table, string field)
+        //{
+        //    try
+        //    {
+        //        List<string> downloadData = new List<string>();
+        //        NpgsqlCommand commandOut = new NpgsqlCommand($"SELECT {field} FROM public.\"{table}\";", connOut);
+        //        NpgsqlDataReader reader = commandOut.ExecuteReader();
+        //        Console.WriteLine($"{DateTime.Now}: Данные с сервера получены.");
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"{DateTime.Now}: " + ex.Message);
-                return false;
-            }
-        }
+        //        if (reader.HasRows)
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                for (int i = 0; i < reader.FieldCount; i++)
+        //                {
+        //                    if (reader.GetFieldType(i).ToString() != "System.String")
+        //                    {
+        //                        downloadData.Add(Convert.ToString(reader.GetValue(i)));
+        //                    }
+        //                    else
+        //                    {
+        //                        downloadData.Add(reader.GetString(i));
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        reader.Close();
+        //        Console.WriteLine($"{DateTime.Now}: Данные с сервера собраны в пакет.");
+
+        //        try
+        //        {
+        //            for (int i = 0; i < downloadData.Count; i++)
+        //            {
+        //                NpgsqlCommand commandIn = new NpgsqlCommand(
+        //                    $"INSERT INTO \"{table}\"({field}) VALUES ('{downloadData[i]}');", connIn);
+        //                commandIn.ExecuteNonQuery();
+        //            }
+        //            Console.WriteLine($"{DateTime.Now}: Данные отправлены на второй сервер.");
+        //            Console.WriteLine($"УСПЕШНО! Операция возобновится через 1 минуту...\n  ");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine($"{DateTime.Now}: {ex.Message}");
+        //        }
+
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"{DateTime.Now}: " + ex.Message);
+        //        return false;
+        //    }
+        //}
     }
 }

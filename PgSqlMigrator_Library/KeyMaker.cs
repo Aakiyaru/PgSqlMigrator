@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PgSqlMigrator_Core
+namespace PgSqlMigrator_Library
 {
     /// <summary>
     /// Класс создания ключей шифрования
