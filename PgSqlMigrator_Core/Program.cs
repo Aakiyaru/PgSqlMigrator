@@ -120,12 +120,12 @@ namespace PgSqlMigrator_Core
 
         private static NpgsqlConnection ConnIn()
         {   
-            return DataBaseConnection.CreateConnection(inAddress, inLogin, inPass, inDB);
+            return DataBaseConnection.CreateConnection(inAddress, inLogin, inPass, inDB, inTable);
         }
 
         private static NpgsqlConnection ConnOut()
         {
-            return DataBaseConnection.CreateConnection(outAddress, outLogin, outPass, outDB);
+            return DataBaseConnection.CreateConnection(outAddress, outLogin, outPass, outDB, outTable);
         }
 
         
