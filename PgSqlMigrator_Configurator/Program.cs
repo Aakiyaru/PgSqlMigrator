@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading;
-using Npgsql;
+﻿using Npgsql;
 using PgSqlMigrator_Library;
+using System;
+using System.Net;
 
-namespace PgSqlMigrator_Core
+namespace PgSqlMigrator_Configurator
 {
-    class Program
+    internal class Program
     {
         static ProgramData Data;
         static string inAddress;
@@ -17,53 +17,51 @@ namespace PgSqlMigrator_Core
         static string outPass;
         static string outDB;
         static string key;
-        static NpgsqlConnection connectionIn;
-        static NpgsqlConnection connectionOut;
-        static string table;
 
         static void Main(string[] args)
         {
-            if (!(CheckKey() && LoadData()))
-            {
-                Console.WriteLine("Данные не введены, откройте файл \"PgSqlMigrator_Configurator.exe\" для настройки подключения");
-                Console.ReadLine();
-                return;
-            }
-
-            connectionOut = ConnOut();
-            connectionIn = ConnIn();
-
-            while (true)
-            {
-                Console.Write("\n>>> ");
-                string inp = Console.ReadLine();
-
-                switch(inp)
-                {
-                    case "start":
-                        OnWork();
-                        break;
-
-                    default:
-                        Console.WriteLine($"Неизвестная команда '{inp}', обратитесь к справочнику или напишите 'help'");
-                        break;
-                }
-            }
+            CheckKey();
+            LoadData();
+            key = KeyMaker.Create();
+            Data.key = InfoCoder.Incode(key, KeyMaker.defaultKey);
+            ChangeOut();
+            ChangeIn();
         }
 
-        private static void OnWork()
+        private static void ChangeIn()
         {
-            Console.Write("Введите имя таблицы: ");
-            table = Console.ReadLine();
+            string cons = "IN | ";
+            Console.Write(cons + "Введите адрес сервера: ");
+            inAddress = Console.ReadLine();
+            Data.inAddress = InfoCoder.Incode(inAddress, key);
+            Console.Write(cons + "Введите имя пользователя: ");
+            inLogin = Console.ReadLine();
+            Data.inLogin = InfoCoder.Incode(inLogin, key);
+            Console.Write(cons + "Введите пароль пользователя: ");
+            inPass = Console.ReadLine();
+            Data.inPass = InfoCoder.Incode(inPass, key);
+            Console.Write(cons + "Введите имя базы данных: ");
+            inDB = Console.ReadLine();
+            Data.inDB = InfoCoder.Incode(inDB, key);
+            SaveLoader.Save(Data);
+        }
 
-            while (true)
-            {
-                if (!CommandExecutor.Execute(connectionIn, connectionOut, table))
-                {
-                    break;
-                }
-                Thread.Sleep(60000);
-            }
+        private static void ChangeOut()
+        {
+            string cons = "OUT | ";
+            Console.Write(cons + "Введите адрес сервера: ");
+            outAddress = Console.ReadLine();
+            Data.outAddress = InfoCoder.Incode(outAddress, key);
+            Console.Write(cons + "Введите имя пользователя: ");
+            outLogin = Console.ReadLine();
+            Data.outLogin = InfoCoder.Incode(outLogin, key);
+            Console.Write(cons + "Введите пароль пользователя: ");
+            outPass = Console.ReadLine();
+            Data.outPass = InfoCoder.Incode(outPass, key);
+            Console.Write(cons + "Введите имя базы данных: ");
+            outDB = Console.ReadLine();
+            Data.outDB = InfoCoder.Incode(outDB, key);
+            SaveLoader.Save(Data);
         }
 
         private static bool CheckKey()
@@ -117,17 +115,5 @@ namespace PgSqlMigrator_Core
                 return false;
             }
         }
-
-        private static NpgsqlConnection ConnIn()
-        {   
-            return DataBaseConnection.CreateConnection(inAddress, inLogin, inPass, inDB);
-        }
-
-        private static NpgsqlConnection ConnOut()
-        {
-            return DataBaseConnection.CreateConnection(outAddress, outLogin, outPass, outDB);
-        }
-
-        
     }
 }
