@@ -1,7 +1,5 @@
-﻿using Npgsql;
-using PgSqlMigrator_Library;
+﻿using PgSqlMigrator_Library;
 using System;
-using System.Net;
 
 namespace PgSqlMigrator_Configurator
 {
@@ -22,12 +20,23 @@ namespace PgSqlMigrator_Configurator
 
         static void Main(string[] args)
         {
-            CheckKey();
-            LoadData();
-            key = KeyMaker.Create();
-            Data.key = InfoCoder.Incode(key, KeyMaker.defaultKey);
-            ChangeOut();
-            ChangeIn();
+            try
+            {
+                SaveLoader.Delete();
+                CheckKey();
+                LoadData();
+                key = KeyMaker.Create();
+                Data.key = InfoCoder.Incode(key, KeyMaker.defaultKey);
+                ChangeOut();
+                ChangeIn();
+                CreateDataMap();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                return;
+            }
         }
 
         private static void ChangeIn()
@@ -123,6 +132,24 @@ namespace PgSqlMigrator_Configurator
             catch
             {
                 return false;
+            }
+        }
+
+        private static void CreateDataMap()
+        {
+            Console.Write("Введите количество переносимых полей: ");
+            int fieldsCount = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Введите соответствие полей:");
+            string[,] fieldConformity = new string[fieldsCount, 2];
+
+            for (int i = 0; i < fieldsCount; i++)
+            {
+                Console.Write($"OUT {i}: ");
+                fieldConformity[i, 0] = Console.ReadLine();
+
+                Console.Write($"IN {i}: ");
+                fieldConformity[i, 1] = Console.ReadLine();
             }
         }
     }

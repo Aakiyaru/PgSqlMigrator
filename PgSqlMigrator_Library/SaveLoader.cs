@@ -58,5 +58,10 @@ namespace PgSqlMigrator_Library
                 Console.WriteLine(ex.Message);
             }
         }
+
+        public static void Delete()
+        {
+            File.Delete(file);
+        }
     }
 }
