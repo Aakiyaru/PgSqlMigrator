@@ -1,5 +1,6 @@
 ﻿using PgSqlMigrator_Library;
 using System;
+using System.IO;
 
 namespace PgSqlMigrator_Configurator
 {
@@ -22,13 +23,13 @@ namespace PgSqlMigrator_Configurator
         {
             try
             {
-                SaveLoader.Delete();
-                CheckKey();
-                LoadData();
-                key = KeyMaker.Create();
-                Data.key = InfoCoder.Incode(key, KeyMaker.defaultKey);
-                ChangeOut();
-                ChangeIn();
+                //SaveLoader.Delete();
+                //CheckKey();
+                //LoadData();
+                //key = KeyMaker.Create();
+                //Data.key = InfoCoder.Incode(key, KeyMaker.defaultKey);
+                //ChangeOut();
+                //ChangeIn();
                 CreateDataMap();
             }
             catch (Exception ex)
@@ -151,6 +152,10 @@ namespace PgSqlMigrator_Configurator
                 Console.Write($"IN {i}: ");
                 fieldConformity[i, 1] = Console.ReadLine();
             }
+
+            string docFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.Create);
+            string file = Path.Combine(docFolder, "datamap.dat");
+            SaveLoader.WriteToFile(fieldConformity, file);
         }
     }
 }

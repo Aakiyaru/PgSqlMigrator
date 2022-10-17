@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Xml.Serialization;
 
 namespace PgSqlMigrator_Library
@@ -62,6 +64,29 @@ namespace PgSqlMigrator_Library
         public static void Delete()
         {
             File.Delete(file);
+        }
+
+        public static void WriteToFile(string[,] array, string file)
+        {
+            StringBuilder output = new StringBuilder();
+            for (int row = 0; row < array.GetLength(0); row++)
+            {
+                for (int column = 0; column < array.GetLength(1); column++)
+                {
+                    output.Append($"{array[row, column]}|");
+
+                }
+                output.Append(Environment.NewLine);
+            }
+
+            try
+            {
+                System.IO.File.WriteAllText(file, output.ToString());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"<--Ошибка записи в файл: {ex.Message}");
+            }
         }
     }
 }
