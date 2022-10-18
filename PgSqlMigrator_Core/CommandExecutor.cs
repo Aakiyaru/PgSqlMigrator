@@ -8,9 +8,10 @@ namespace PgSqlMigrator_Core
         /// <summary>
         /// Метод исполнения команды
         /// </summary>
-        /// <param name="connIn"></param>
-        /// <param name="connOut"></param>
-        /// <param name="inTable"></param>
+        /// <param name="connIn">Подключение к БД для записи</param>
+        /// <param name="connOut">Подключение к БД для чтения</param>
+        /// <param name="inTable">Название таблицы для записи</param>
+        /// /// <param name="outTable">Название таблицы для чтения</param>
         /// <returns>true либо false в зависимости от успешности операции</returns>
         public static bool Execute(NpgsqlConnection connIn, NpgsqlConnection connOut, string inTable, string outTable)
         {

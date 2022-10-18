@@ -127,7 +127,5 @@ namespace PgSqlMigrator_Core
         {
             return DataBaseConnection.CreateConnection(outAddress, outLogin, outPass, outDB, outTable);
         }
-
-        
     }
 }

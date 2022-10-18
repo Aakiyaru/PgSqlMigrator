@@ -11,10 +11,11 @@ namespace PgSqlMigrator_Core
         /// <summary>
         /// Создать подключение к БД
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="login"></param>
-        /// <param name="password"></param>
-        /// <param name="dbname"></param>
+        /// <param name="address">Адрес БД</param>
+        /// <param name="login">Имя пользователя</param>
+        /// <param name="password">Пароль</param>
+        /// <param name="dbname">Название БД</param>
+        /// <param name="table">Таблица</param>
         /// <returns>Объект подключения к БД класса NpgsqlConnection</returns>
         public static NpgsqlConnection CreateConnection(string address, string login, string password, string dbname, string table)
         {

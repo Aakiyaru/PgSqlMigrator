@@ -45,7 +45,7 @@ namespace PgSqlMigrator_Library
         /// <summary>
         /// Сохранение данных программы в файл
         /// </summary>
-        /// <param name="progData"></param>
+        /// <param name="progData">Сохраняемые данные</param>
         public static void Save(ProgramData progData)
         {
             try
@@ -61,19 +61,27 @@ namespace PgSqlMigrator_Library
             }
         }
 
+        /// <summary>
+        /// Удаление сохранённых данных
+        /// </summary>
         public static void Delete()
         {
             File.Delete(file);
         }
 
-        public static void WriteToFile(string[,] array, string file)
+        /// <summary>
+        /// Запись карты соответствия полей таблиц в файл
+        /// </summary>
+        /// <param name="array">Массив соответствия</param>
+        /// <param name="file">Путь к файлу</param>
+        public static void WriteMapToFile(string[,] array, string file)
         {
             StringBuilder output = new StringBuilder();
             for (int row = 0; row < array.GetLength(0); row++)
             {
                 for (int column = 0; column < array.GetLength(1); column++)
                 {
-                    output.Append($"{array[row, column]}|");
+                    output.Append($"{array[row, column]} ");
 
                 }
                 output.Append(Environment.NewLine);
@@ -87,6 +95,32 @@ namespace PgSqlMigrator_Library
             {
                 Debug.WriteLine($"<--Ошибка записи в файл: {ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// Чтение карты соответствия полей таблиц из файла
+        /// </summary>
+        /// <param name="file">Путь к файлу</param>
+        /// <returns></returns>
+        public static string[,] ReadMapFromFile(string file)
+        {
+            const int columnsCount = 2; //константа 2, потому что таблицы всегда 2
+
+            string[] fileRows;
+            fileRows = System.IO.File.ReadAllLines(file);
+            string[,] output = new string[fileRows.Length, columnsCount];
+
+            for (int i = 0; i < fileRows.Length; i++)
+            {
+                string[] wordsInRow = fileRows[i].Split(' ');
+
+                for (int p = 0; p < columnsCount; p++)
+                {
+                    output[i, p] = wordsInRow[p];
+                }
+            }
+
+            return output;
         }
     }
 }
