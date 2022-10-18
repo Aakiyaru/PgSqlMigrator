@@ -1,7 +1,7 @@
 ﻿using System;
 using Npgsql;
 
-namespace PgSqlMigrator_Core
+namespace PgSqlMigrator_Core.DataBase
 {
     /// <summary>
     /// Класс подключения к БД

@@ -3,8 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
+using PgSqlMigrator_Library.Models;
 
-namespace PgSqlMigrator_Library
+namespace PgSqlMigrator_Library.DataController
 {
     /// <summary>
     /// Класс сохранения данных
@@ -89,7 +90,7 @@ namespace PgSqlMigrator_Library
 
             try
             {
-                System.IO.File.WriteAllText(file, output.ToString());
+                File.WriteAllText(file, output.ToString());
             }
             catch (Exception ex)
             {
@@ -107,7 +108,7 @@ namespace PgSqlMigrator_Library
             const int columnsCount = 2; //константа 2, потому что таблицы всегда 2
 
             string[] fileRows;
-            fileRows = System.IO.File.ReadAllLines(file);
+            fileRows = File.ReadAllLines(file);
             string[,] output = new string[fileRows.Length, columnsCount];
 
             for (int i = 0; i < fileRows.Length; i++)

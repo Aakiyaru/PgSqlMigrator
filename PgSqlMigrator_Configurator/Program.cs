@@ -1,4 +1,6 @@
-﻿using PgSqlMigrator_Library;
+﻿using PgSqlMigrator_Library.DataController;
+using PgSqlMigrator_Library.Incryption;
+using PgSqlMigrator_Library.Models;
 using System;
 using System.IO;
 

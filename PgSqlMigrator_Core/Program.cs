@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Threading;
 using Npgsql;
-using PgSqlMigrator_Library;
+using PgSqlMigrator_Core.DataBase;
+using PgSqlMigrator_Library.DataController;
+using PgSqlMigrator_Library.Incryption;
+using PgSqlMigrator_Library.Models;
 
 namespace PgSqlMigrator_Core
 {

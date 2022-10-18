@@ -1,4 +1,4 @@
-﻿namespace PgSqlMigrator_Library
+﻿namespace PgSqlMigrator_Library.Incryption
 {
     /// <summary>
     /// Класс кодирования информации

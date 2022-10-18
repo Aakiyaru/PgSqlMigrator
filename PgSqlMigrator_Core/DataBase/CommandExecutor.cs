@@ -1,7 +1,7 @@
 ﻿using Npgsql;
 using System;
 
-namespace PgSqlMigrator_Core
+namespace PgSqlMigrator_Core.DataBase
 {
     public class CommandExecutor
     {
@@ -21,7 +21,7 @@ namespace PgSqlMigrator_Core
                 NpgsqlDataReader rowCounter = commandOut.ExecuteReader();
                 int rowCount = 0;
 
-                while(rowCounter.Read())
+                while (rowCounter.Read())
                 {
                     rowCount++;
                 }
@@ -30,7 +30,7 @@ namespace PgSqlMigrator_Core
                 NpgsqlDataReader reader = commandOut.ExecuteReader();
                 Console.WriteLine($"{DateTime.Now}: Данные с сервера получены.");
 
-                string[,] downloadData = new string[rowCount,reader.FieldCount];
+                string[,] downloadData = new string[rowCount, reader.FieldCount];
                 int readerCount = 0;
 
                 if (reader.HasRows)
@@ -49,11 +49,11 @@ namespace PgSqlMigrator_Core
 
                 string commandText = $"INSERT INTO \"{outTable}\" VALUES (";
 
-                for (int i = 0; i < downloadData.Length/reader.FieldCount; i++)
+                for (int i = 0; i < downloadData.Length / reader.FieldCount; i++)
                 {
                     for (int j = 0; j < reader.FieldCount; j++)
                     {
-                        commandText += $"'{downloadData[i,j]}',";
+                        commandText += $"'{downloadData[i, j]}',";
                     }
                     commandText = commandText.Substring(0, commandText.Length - 1);
                     commandText += ");";
