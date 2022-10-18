@@ -1,7 +1,7 @@
 ﻿using System;
 using Npgsql;
 
-namespace PgSqlMigrator_Core
+namespace PgSqlMigrator_Core.DataBase
 {
     /// <summary>
     /// Класс подключения к БД
@@ -11,19 +11,24 @@ namespace PgSqlMigrator_Core
         /// <summary>
         /// Создать подключение к БД
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="login"></param>
-        /// <param name="password"></param>
-        /// <param name="dbname"></param>
+        /// <param name="address">Адрес БД</param>
+        /// <param name="login">Имя пользователя</param>
+        /// <param name="password">Пароль</param>
+        /// <param name="dbname">Название БД</param>
+        /// <param name="table">Таблица</param>
         /// <returns>Объект подключения к БД класса NpgsqlConnection</returns>
-        public static NpgsqlConnection CreateConnection(string address, string login, string password, string dbname)
+        public static NpgsqlConnection CreateConnection(string address, string login, string password, string dbname, string table)
         {
             string connString = $"Host={address};Username={login};Password={password};Database={dbname}";
             NpgsqlConnection connection = new NpgsqlConnection(connString);
             try
             {
                 connection.Open();
-                Console.WriteLine($"{DateTime.Now}: успешное подключение к базе данных {address} - {dbname}");
+                Console.WriteLine($"{DateTime.Now}: успешное подключение\n" +
+                    $"  Адрес: {address}\n" +
+                    $"  Пользователь: {login}\n" +
+                    $"  База данных: {dbname}\n" +
+                    $"  Таблица: {table}\n");
                 return connection;
             }
             catch (Exception ex)

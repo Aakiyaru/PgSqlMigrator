@@ -1,33 +1,48 @@
-﻿using Npgsql;
-using PgSqlMigrator_Library;
+﻿using PgSqlMigrator_Library.DataController;
+using PgSqlMigrator_Library.Incryption;
+using PgSqlMigrator_Library.Models;
 using System;
-using System.Net;
+using System.IO;
 
 namespace PgSqlMigrator_Configurator
 {
     internal class Program
     {
-        static ProgramData Data;
+        static ProgramData Data = new ProgramData();
         static string inAddress;
         static string inLogin;
         static string inPass;
         static string inDB;
+        static string inTable;
         static string outAddress;
         static string outLogin;
         static string outPass;
         static string outDB;
+        static string outTable;
         static string key;
 
         static void Main(string[] args)
         {
-            CheckKey();
-            LoadData();
-            key = KeyMaker.Create();
-            Data.key = InfoCoder.Incode(key, KeyMaker.defaultKey);
-            ChangeOut();
-            ChangeIn();
+            try
+            {
+                SaveLoader.Delete(); //удаление старых данных
+                key = KeyMaker.Create();
+                Data.key = InfoCoder.Incode(key, KeyMaker.defaultKey); //создание ключей шифрования
+                ChangeOut(); //изменение параметров подключения к БД 1
+                ChangeIn(); //изменение параметров подключения к БД 2
+                CreateDataMap(); //создание карты соответствия между полями таблиц
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                return;
+            }
         }
 
+        /// <summary>
+        /// Изменение параметров подключения к БД куда идёт запись
+        /// </summary>
         private static void ChangeIn()
         {
             string cons = "IN | ";
@@ -43,9 +58,15 @@ namespace PgSqlMigrator_Configurator
             Console.Write(cons + "Введите имя базы данных: ");
             inDB = Console.ReadLine();
             Data.inDB = InfoCoder.Incode(inDB, key);
+            Console.Write(cons + "Введите имя таблицы: ");
+            inTable = Console.ReadLine();
+            Data.inTable = InfoCoder.Incode(inTable, key);
             SaveLoader.Save(Data);
         }
 
+        /// <summary>
+        /// Изменение параметров подключения к БД откуда идёт чтение
+        /// </summary>
         private static void ChangeOut()
         {
             string cons = "OUT | ";
@@ -61,59 +82,33 @@ namespace PgSqlMigrator_Configurator
             Console.Write(cons + "Введите имя базы данных: ");
             outDB = Console.ReadLine();
             Data.outDB = InfoCoder.Incode(outDB, key);
+            Console.Write(cons + "Введите имя таблицы: ");
+            outTable = Console.ReadLine();
+            Data.outTable = InfoCoder.Incode(outTable, key);
             SaveLoader.Save(Data);
         }
 
-        private static bool CheckKey()
+        /// <summary>
+        /// Создание карты соответствия между полями таблиц
+        /// </summary>
+        private static void CreateDataMap()
         {
-            try
-            {
-                Data = SaveLoader.Load();
+            Console.Write("Введите количество переносимых полей: ");
+            int fieldsCount = Convert.ToInt32(Console.ReadLine());
 
-                if (Data.key != null)
-                {
-                    key = InfoCoder.Decode(Data.key, KeyMaker.defaultKey);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
+            Console.WriteLine("Введите соответствие полей:");
+            string[,] fieldConformity = new string[fieldsCount, 2];
 
-        private static bool LoadData()
-        {
-            try
+            for (int i = 0; i < fieldsCount; i++)
             {
-                Data = SaveLoader.Load();
+                Console.Write($"OUT {i}: ");
+                fieldConformity[i, 0] = Console.ReadLine();
 
-                if (Data.inAddress != null && Data.inLogin != null && Data.inPass != null && Data.inDB != null && Data.outAddress != null && Data.outLogin != null && Data.outPass != null && Data.outDB != null)
-                {
-                    inAddress = InfoCoder.Decode(Data.inAddress, key);
-                    inLogin = InfoCoder.Decode(Data.inLogin, key);
-                    inPass = InfoCoder.Decode(Data.inPass, key);
-                    inDB = InfoCoder.Decode(Data.inDB, key);
-                    outAddress = InfoCoder.Decode(Data.outAddress, key);
-                    outLogin = InfoCoder.Decode(Data.outLogin, key);
-                    outPass = InfoCoder.Decode(Data.outPass, key);
-                    outDB = InfoCoder.Decode(Data.outDB, key);
-
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                Console.Write($"IN {i}: ");
+                fieldConformity[i, 1] = Console.ReadLine();
             }
-            catch
-            {
-                return false;
-            }
+            
+            SaveLoader.WriteMapToFile(fieldConformity);
         }
     }
 }

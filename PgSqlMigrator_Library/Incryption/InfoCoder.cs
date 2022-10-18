@@ -1,4 +1,4 @@
-﻿namespace PgSqlMigrator_Library
+﻿namespace PgSqlMigrator_Library.Incryption
 {
     /// <summary>
     /// Класс кодирования информации
@@ -8,8 +8,8 @@
         /// <summary>
         /// Метод для шифрования строки
         /// </summary>
-        /// <param name="input"></param>
-        /// <param name="key"></param>
+        /// <param name="input">Данные для шифорвания</param>
+        /// <param name="key">Ключ шифрования</param>
         /// <returns>Зашифрованная строка</returns>
         public static string Incode(string input, string key)
         {
@@ -24,8 +24,8 @@
         /// <summary>
         /// Медот дешифровки строки
         /// </summary>
-        /// <param name="input"></param>
-        /// <param name="key"></param>
+        /// <param name="input">Данные для дешифровки</param>
+        /// <param name="key">Ключ шифрования</param>
         /// <returns>Расшифрованная строка</returns>
         public static string Decode(string input, string key)
         {
