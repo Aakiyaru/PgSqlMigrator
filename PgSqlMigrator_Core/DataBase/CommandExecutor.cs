@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using PgSqlMigrator_Library.DataController;
 using System;
 
 namespace PgSqlMigrator_Core.DataBase
@@ -17,7 +18,18 @@ namespace PgSqlMigrator_Core.DataBase
         {
             try
             {
-                NpgsqlCommand commandOut = new NpgsqlCommand($"SELECT * FROM public.\"{inTable}\";", connOut);
+                string[,] fieldsMap = SaveLoader.ReadMapFromFile();
+                string commandOutTextFields = "";
+
+                for (int i = 0; i < fieldsMap.Length / 2; i++)
+                {
+                    commandOutTextFields += fieldsMap[i, 0] + ", ";
+                }
+                commandOutTextFields = commandOutTextFields.Substring(0, commandOutTextFields.Length - 2);
+
+                string commnadOutText = $"SELECT {commandOutTextFields} FROM public.\"{inTable}\";";
+                
+                NpgsqlCommand commandOut = new NpgsqlCommand(commnadOutText, connOut);
                 NpgsqlDataReader rowCounter = commandOut.ExecuteReader();
                 int rowCount = 0;
 
@@ -47,7 +59,15 @@ namespace PgSqlMigrator_Core.DataBase
 
                 Console.WriteLine($"{DateTime.Now}: Данные с сервера собраны в пакет.");
 
-                string commandText = $"INSERT INTO \"{outTable}\" VALUES (";
+                string commandInTextFields = "";
+
+                for (int i = 0; i < fieldsMap.Length / 2; i++)
+                {
+                    commandInTextFields += fieldsMap[i, 1] + ", ";
+                }
+                commandInTextFields = commandInTextFields.Substring(0, commandInTextFields.Length - 2);
+
+                string commandText = $"INSERT INTO \"{outTable}\" ({commandInTextFields}) VALUES (";
 
                 for (int i = 0; i < downloadData.Length / reader.FieldCount; i++)
                 {
@@ -60,11 +80,10 @@ namespace PgSqlMigrator_Core.DataBase
 
                     NpgsqlCommand commandIn = new NpgsqlCommand(commandText, connIn);
                     commandIn.ExecuteNonQuery();
-                    commandText = $"INSERT INTO \"{outTable}\" VALUES (";
+                    commandText = $"INSERT INTO \"{outTable}\" ({commandInTextFields}) VALUES (";
 
                 }
                 Console.WriteLine($"{DateTime.Now}: Данные отправлены на второй сервер.");
-                Console.WriteLine($"УСПЕШНО! Операция возобновится через 1 минуту...\n  ");
 
                 reader.Close();
                 return true;

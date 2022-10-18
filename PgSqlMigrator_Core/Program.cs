@@ -45,7 +45,19 @@ namespace PgSqlMigrator_Core
                 switch(inp)
                 {
                     case "start":
-                        OnWork();
+                        Console.Write("Укажите период (в минутах): ");
+                        int period = 1;
+                        try
+                        {
+                            period = Convert.ToInt32(Console.ReadLine());
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            break;
+                        }
+
+                        OnWork(period);
                         break;
 
                     default:
@@ -55,7 +67,7 @@ namespace PgSqlMigrator_Core
             }
         }
 
-        private static void OnWork()
+        private static void OnWork(int time)
         {
             while (true)
             {
@@ -63,7 +75,8 @@ namespace PgSqlMigrator_Core
                 {
                     break;
                 }
-                Thread.Sleep(60000);
+                Console.WriteLine($"УСПЕШНО! Операция возобновится через {time} минут...\n  ");
+                Thread.Sleep(60000 * time);
             }
         }
 

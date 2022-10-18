@@ -75,8 +75,11 @@ namespace PgSqlMigrator_Library.DataController
         /// </summary>
         /// <param name="array">Массив соответствия</param>
         /// <param name="file">Путь к файлу</param>
-        public static void WriteMapToFile(string[,] array, string file)
+        public static void WriteMapToFile(string[,] array)
         {
+            string docFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.Create);
+            string file = Path.Combine(docFolder, "datamap.dat");
+
             StringBuilder output = new StringBuilder();
             for (int row = 0; row < array.GetLength(0); row++)
             {
@@ -101,10 +104,13 @@ namespace PgSqlMigrator_Library.DataController
         /// <summary>
         /// Чтение карты соответствия полей таблиц из файла
         /// </summary>
-        /// <param name="file">Путь к файлу</param>
-        /// <returns></returns>
-        public static string[,] ReadMapFromFile(string file)
+        /// <returns>Данные в виде двумерного массива</returns>
+        public static string[,] ReadMapFromFile()
         {
+
+            string docFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.Create);
+            string file = Path.Combine(docFolder, "datamap.dat");
+
             const int columnsCount = 2; //константа 2, потому что таблицы всегда 2
 
             string[] fileRows;

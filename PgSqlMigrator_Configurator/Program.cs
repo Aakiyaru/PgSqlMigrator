@@ -107,10 +107,8 @@ namespace PgSqlMigrator_Configurator
                 Console.Write($"IN {i}: ");
                 fieldConformity[i, 1] = Console.ReadLine();
             }
-
-            string docFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.Create);
-            string file = Path.Combine(docFolder, "datamap.dat");
-            SaveLoader.WriteMapToFile(fieldConformity, file);
+            
+            SaveLoader.WriteMapToFile(fieldConformity);
         }
     }
 }
