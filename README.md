@@ -1,4 +1,9 @@
 # PgSqlMigrator
+
+<p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/993px-Postgresql_elephant.svg.png" width="125" title=PostgresLogo>
+</p>
+
 <i><b>Программа для переноса данных между PostgreSQL</b></i> <br><br>
 Выполнена с помощью библиотеки "Npgsql". Данные о подключении к базам данных сохраняются для простоты использования. Сохранённые данные хронятся в зашифрованном виде (зашифрованы методом XOR). Чтобы исключить проблемы несоответствия полей таблиц, карта полей вводится вручную при конфигурации программы.
 
