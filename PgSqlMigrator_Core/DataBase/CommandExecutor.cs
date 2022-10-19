@@ -1,6 +1,8 @@
 ﻿using Npgsql;
 using PgSqlMigrator_Library.DataController;
 using System;
+using System.ComponentModel.Design;
+using System.Reflection.PortableExecutable;
 
 namespace PgSqlMigrator_Core.DataBase
 {
@@ -67,24 +69,47 @@ namespace PgSqlMigrator_Core.DataBase
                 }
                 commandInTextFields = commandInTextFields.Substring(0, commandInTextFields.Length - 2);
 
-                string commandText = $"INSERT INTO \"{outTable}\" ({commandInTextFields}) VALUES (";
+                string valuesIn = "";
+                string commandText = "";
 
                 for (int i = 0; i < downloadData.Length / reader.FieldCount; i++)
                 {
                     for (int j = 0; j < reader.FieldCount; j++)
                     {
-                        commandText += $"'{downloadData[i, j]}',";
+                        valuesIn += $"'{downloadData[i,j]}',";
                     }
-                    commandText = commandText.Substring(0, commandText.Length - 1);
-                    commandText += ");";
+                    valuesIn = valuesIn.Substring(0, valuesIn.Length - 1);
 
-                    NpgsqlCommand commandIn = new NpgsqlCommand(commandText, connIn);
-                    commandIn.ExecuteNonQuery();
-                    commandText = $"INSERT INTO \"{outTable}\" ({commandInTextFields}) VALUES (";
+                    commandText = $"INSERT INTO \"{outTable}\" ({commandInTextFields}) VALUES ({valuesIn});";
+                    try
+                    {
+                        NpgsqlCommand commandIn = new NpgsqlCommand(commandText, connIn);
+                        commandIn.ExecuteNonQuery();
+                    }
+                    catch (Npgsql.PostgresException)
+                    {
+                        string condition = "";
+                        for (int p = 0; p < fieldsMap.Length / 2; p++)
+                        {
+                            condition += $" ({fieldsMap[p,1]} = '{downloadData[i,p]}') AND";
+                        }
+                        condition = condition.Substring(0, condition.Length - 3);
 
+                        valuesIn = "";
+                    
+                        for (int j = 0; j < reader.FieldCount; j++)
+                        {
+                            valuesIn += $"'{downloadData[i, j]}',";
+                        }
+                        valuesIn = valuesIn.Substring(0, valuesIn.Length - 1);
+
+                        commandText = $"UPDATE \"{outTable}\" SET ({commandInTextFields}) = ({valuesIn}) WHERE{condition};";
+                        NpgsqlCommand updCommand = new NpgsqlCommand(commandText, connIn);
+                        updCommand.ExecuteNonQuery();
+                    }
                 }
-                Console.WriteLine($"{DateTime.Now}: Данные отправлены на второй сервер.");
 
+                Console.WriteLine($"{DateTime.Now}: Данные отправлены на второй сервер.");
                 reader.Close();
                 return true;
             }
@@ -94,6 +119,6 @@ namespace PgSqlMigrator_Core.DataBase
                 return false;
             }
 
-        }
+}
     }
 }
