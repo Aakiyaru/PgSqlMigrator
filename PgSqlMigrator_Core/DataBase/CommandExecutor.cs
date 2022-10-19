@@ -20,6 +20,7 @@ namespace PgSqlMigrator_Core.DataBase
         {
             try
             {
+                //SELECT
                 string[,] fieldsMap = SaveLoader.ReadMapFromFile();
                 string commandOutTextFields = "";
 
@@ -61,13 +62,15 @@ namespace PgSqlMigrator_Core.DataBase
 
                 Console.WriteLine($"{DateTime.Now}: Данные с сервера собраны в пакет.");
 
-                string commandInTextFields = "";
+
+                //INSERT
+                string FieldsIn = "";
 
                 for (int i = 0; i < fieldsMap.Length / 2; i++)
                 {
-                    commandInTextFields += fieldsMap[i, 1] + ", ";
+                    FieldsIn += fieldsMap[i, 1] + ", ";
                 }
-                commandInTextFields = commandInTextFields.Substring(0, commandInTextFields.Length - 2);
+                FieldsIn = FieldsIn.Substring(0, FieldsIn.Length - 2);
 
                 string valuesIn = "";
                 string commandText = "";
@@ -80,32 +83,39 @@ namespace PgSqlMigrator_Core.DataBase
                     }
                     valuesIn = valuesIn.Substring(0, valuesIn.Length - 1);
 
-                    commandText = $"INSERT INTO \"{outTable}\" ({commandInTextFields}) VALUES ({valuesIn});";
+                    commandText = $"INSERT INTO \"{outTable}\" ({FieldsIn}) VALUES ({valuesIn});";
                     try
                     {
                         NpgsqlCommand commandIn = new NpgsqlCommand(commandText, connIn);
                         commandIn.ExecuteNonQuery();
+                        commandText = "";
+                        valuesIn = "";
+                        continue;
                     }
                     catch (Npgsql.PostgresException)
                     {
+                        //UPDATE
                         string condition = "";
                         for (int p = 0; p < fieldsMap.Length / 2; p++)
                         {
-                            condition += $" ({fieldsMap[p,1]} = '{downloadData[i,p]}') AND";
+                            condition += $" ({fieldsMap[p, 1]} = '{downloadData[i, p]}') AND";
                         }
                         condition = condition.Substring(0, condition.Length - 3);
 
                         valuesIn = "";
-                    
+
                         for (int j = 0; j < reader.FieldCount; j++)
                         {
                             valuesIn += $"'{downloadData[i, j]}',";
                         }
                         valuesIn = valuesIn.Substring(0, valuesIn.Length - 1);
 
-                        commandText = $"UPDATE \"{outTable}\" SET ({commandInTextFields}) = ({valuesIn}) WHERE{condition};";
+                        commandText = $"UPDATE \"{outTable}\" SET ({FieldsIn}) = ({valuesIn}) WHERE{condition};";
                         NpgsqlCommand updCommand = new NpgsqlCommand(commandText, connIn);
                         updCommand.ExecuteNonQuery();
+                        commandText = "";
+                        valuesIn = "";
+                        continue;
                     }
                 }
 
